@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
 const canvas = document.getElementById("experience-canvas")
@@ -7,12 +8,20 @@ const sizes = {
 	height: window.innerHeight
 };
 
-const camera = new THREE.PerspectiveCamera( 75, sizes.width / sizes.height, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer({canvas: canvas});
+renderer.setSize(sizes.width, sizes.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
-renderer.setSize( sizes.width, sizes.height );
-renderer.setAnimationLoop( animate );
-document.body.appendChild( renderer.domElement );
+
+const camera = new THREE.PerspectiveCamera( 
+	75, 
+	sizes.width / sizes.height, 
+	0.1,
+	1000 
+	);
+
+const controls = new OrbitControls(camera, canvas);
+controls.update();
 
 //luz ambiente y direccional
 const color = 0xFFFFFF;
@@ -46,12 +55,9 @@ function handleResize(){
 window.addEventListener("resize", handleResize);
 
 function animate() {
-
 	cube.rotation.y += 0.01;
 	cube.rotation.x += 0.01;
-
-	
 	
 	renderer.render( scene, camera );
-
 }
+renderer.setAnimationLoop( animate );
